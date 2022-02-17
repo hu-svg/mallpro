@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.macro.mall.dao.UmsRoleDao">
+    <select id="getMenuList" resultType="com.macro.mall.model.UmsMenu">
+        SELECT um.*
+        FROM ums_admin_role_relation uarr
+                 LEFT JOIN ums_role ur on uarr.role_id = ur.id
+                 LEFT JOIN ums_role_menu_relation urmr on urmr.role_id=uarr.role_id
+                 LEFT JOIN ums_menu um on um.id=urmr.menu_id
+        WHERE uarr.admin_id = #{adminId}
+    </select>
+    <select id="getMenuListByRoleId" resultType="com.macro.mall.model.UmsMenu">
+        SELECT um.*
+        FROM ums_admin_role_relation uarr
+                 LEFT JOIN ums_role ur on uarr.role_id = ur.id
+                 LEFT JOIN ums_role_menu_relation urmr on urmr.role_id=uarr.role_id
+                 LEFT JOIN ums_menu um on um.id=urmr.menu_id
+        WHERE uarr.role_id = #{roleId}
+    </select>
+    <select id="getResourceListByRoleId" resultType="com.macro.mall.model.UmsResource">
+        SELECT ur.*
+        FROM ums_role_resource_relation urrr
+                 LEFT JOIN ums_resource ur on urrr.resource_id=ur.id
+        WHERE urrr.role_id=#{roleId}
+    </select>
+</mapper>

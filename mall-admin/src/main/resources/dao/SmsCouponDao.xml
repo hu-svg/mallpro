@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.macro.mall.dao.SmsCouponDao">
+    <resultMap id="SmsCouponParamDao" type="com.macro.mall.dto.SmsCouponParam"
+               extends="com.macro.mall.mapper.SmsCouponMapper.BaseResultMap">
+        <collection property="productRelationList"
+                    resultMap="com.macro.mall.mapper.SmsCouponProductRelationMapper.BaseResultMap" columnPrefix="pr_"/>
+        <collection property="productCategoryRelationList"
+                    resultMap="com.macro.mall.mapper.SmsCouponProductCategoryRelationMapper.BaseResultMap"
+                    columnPrefix="pcr_"/>
+    </resultMap>
+    <select id="getItem" resultMap="SmsCouponParamDao">
+        select sc.*,
+               scpr.coupon_id              pr_coupon_id,
+               scpr.product_id             pr_product_id,
+               scpr.product_name           pr_product_name,
+               scpr.product_sn             pr_product_sn,
+               scpcr.coupon_id             pcr_coupon_id,
+               scpcr.product_category_id   pcr_product_category_id,
+               scpcr.product_category_name pcr_product_category_name,
+               scpcr.parent_category_name  pcr_parent_category_name
+        from sms_coupon sc
+                 left join sms_coupon_product_relation scpr on sc.id = scpr.coupon_id
+                 left join sms_coupon_product_category_relation scpcr on sc.id = scpcr.coupon_id
+        where sc.id = #{id}
+    </select>
+</mapper>

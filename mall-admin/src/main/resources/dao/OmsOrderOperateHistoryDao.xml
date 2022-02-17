@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.macro.mall.dao.OmsOrderOperateHistoryDao">
+    <!--namespace根据自己需要创建的的mapper的路径和名称填写-->
+
+
+    <insert id="insertList">
+        insert oms_order_operate_history (order_id, operate_man, create_time, order_status, note) values
+        <foreach collection="list" item="item" separator="," index="index">
+            (
+            #{item.orderId},
+            #{item.operateTime},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.orderStatus},
+            #{item.note}
+            )
+        </foreach>
+    </insert>
+</mapper>

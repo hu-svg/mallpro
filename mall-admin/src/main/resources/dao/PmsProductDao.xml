@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.macro.mall.dao.PmsProductDao">
+
+    <resultMap id="PmsProductParamDao" type="com.macro.mall.dto.PmsProductParam"
+               extends="com.macro.mall.mapper.PmsProductMapper.BaseResultMap">
+        <collection property="productLadderList" resultMap="com.macro.mall.mapper.PmsProductLadderMapper.BaseResultMap"
+                    columnPrefix="pl_"/>
+        <collection property="productFullReductionList"
+                    resultMap="com.macro.mall.mapper.PmsProductFullReductionMapper.BaseResultMap" columnPrefix="pfr_"/>
+        <collection property="memberPriceList" resultMap="com.macro.mall.mapper.PmsMemberPriceMapper.BaseResultMap"
+                    columnPrefix="mp_"/>
+        <collection property="skuStockList" resultMap="com.macro.mall.mapper.PmsSkuStockMapper.BaseResultMap"
+                    columnPrefix="ss_"/>
+        <collection property="productAttributeValueList"
+                    resultMap="com.macro.mall.mapper.PmsProductAttributeValueMapper.BaseResultMap" columnPrefix="pav_"/>
+        <collection property="subjectProductRelationList" column="{productId=id}" select="selectSubjectProductRelationByProductId"/>
+        <collection property="prefrenceAreaProductRelationList" column="{productId=id}" select="selectPrefrenceAreaProductRelationByProductId"/>
+    </resultMap>
+    <resultMap id="PmsProductResultMap" type="com.macro.mall.dto.PmsProductResult" extends="PmsProductParamDao">
+        <result property="cateParentId" column="cateParentId"/>
+    </resultMap>
+    <select id="getUpdateInfo" resultMap="PmsProductParamDao">
+        select
+            *,
+            pc.parent_id cateParentId,
+            pl.id pl_id,pl.product_id pl_product_id,pl.discount pl_discount,pl.count pl_count,pl.price pl_price,
+            pfr.id pfr_id,pfr.product_id pfr_product_id,pfr.pfr_price pfr_full_price,pfr.reduce_price pfr_reduce_price,
+            mp.id mp_id,mp.product_id mp_product_id,mp.member_level_id mp_member_level_id,mp.member_price mp_member_price,mp.member_level_name mp_member_level_name,
+            ss.id ss_id,ss.product_id ss_product_id,ss.price ss_price,ss.low_stock ss_low_stock,ss.pic ss_pic,ss.sale ss_sale,ss.sku_code ss_sku_code,ss.stock ss_stock,ss.sp_data ss_sp_data,
+            pav.id pav_id,pav.product_id pav_product_id,pav.product_attribute_id pav_product_attribute_id,pav.value pav_value
+
+        from pms_product p
+                 left join pms_product_category pc on pc.id = p.product_category_id
+                 left join pms_product_ladder pl on pl.product_id = p.id
+                 left join pms_product_full_reduction pfr on pfr.product_id = p.id
+                 left join pms_member_price mp on mp.product_id = p.id
+                 left join pms_sku_stock ss on ss.product_id = p.id
+                 left join pms_product_attribute_value pav on pav.product_id = p.id
+        where p.id = #{id}
+    </select>
+    <select id="selectSubjectProductRelationByProductId" resultMap="com.macro.mall.mapper.CmsSubjectProductRelationMapper.BaseResultMap">
+        select * from cms_subject_product_relation where product_id=#{productId}
+    </select>
+    <select id="selectPrefrenceAreaProductRelationByProductId" resultMap="com.macro.mall.mapper.CmsPrefrenceAreaProductRelationMapper.BaseResultMap">
+        select * from cms_prefrence_area_product_relation where product_id=#{productId}
+    </select>
+</mapper>

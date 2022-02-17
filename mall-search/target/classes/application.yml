@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: mall-search
+  profiles:
+    active: dev # 开发环境
+server:
+  port: 8001
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
